@@ -1,118 +1,50 @@
-# 📈 Dự đoán GDP Việt Nam bằng các mô hình Học máy & Chuỗi thời gian
+# � Dự đoán GDP Việt Nam bằng ARIMA, RNN và LSTM
 
-## 1. Giới thiệu
+## 1. Mục tiêu
 
-Dự án này tập trung vào việc **áp dụng và so sánh các mô hình học máy và mô hình chuỗi thời gian** nhằm dự đoán GDP của Việt Nam trong những năm tiếp theo. Dữ liệu được thu thập từ các chỉ tiêu kinh tế vĩ mô (GDP, dân số, FDI, xuất nhập khẩu, lạm phát, tỷ giá, …) và đã được tiền xử lý trước khi đưa vào huấn luyện mô hình.
-
-Mục tiêu chính của dự án:
-- Xây dựng các mô hình dự đoán GDP dựa trên dữ liệu lịch sử
-- So sánh hiệu quả giữa các mô hình tuyến tính, chuỗi thời gian và deep learning
-- Đánh giá khả năng ứng dụng thực tiễn của từng mô hình
-
----
+Xây dựng và so sánh các mô hình dự đoán GDP Việt Nam dựa trên dữ liệu chuỗi thời gian nhằm đánh giá hiệu quả của các phương pháp truyền thống và học sâu.
 
 ## 2. Dữ liệu
 
-- **Nguồn dữ liệu**: World Bank và số liệu xuất – nhập khẩu Việt Nam
-- **Khoảng thời gian**: ~2000 – 2023
-- **Biến mục tiêu**: GDP (USD)
-- **Biến đầu vào** (tùy mô hình): GDP bình quân đầu người, dân số, FDI, lạm phát, tỷ giá, xuất khẩu, nhập khẩu, cán cân thương mại
+**Nguồn:** World Bank
 
-Dữ liệu sau khi tiền xử lý được lưu tại:
-```
-macro_vietnam_processed.csv
-```
+**Biến mục tiêu:** GDP (current US$)
 
----
+**Dữ liệu được tiền xử lý:**
 
-## 3. Các mô hình được sử dụng
+- Chuẩn hóa giá trị thiếu
+- Ép kiểu dữ liệu sang số
+- Loại bỏ các năm thiếu thông tin
+- Điền giá trị thiếu bằng backfill & forward fill
+- Sắp xếp theo thời gian
 
-### 3.1 Linear Regression (LR)
-- Mô hình hồi quy tuyến tính đa biến
-- Được sử dụng như **mô hình cơ sở (baseline)**
-- Ưu điểm: dễ giải thích, hiệu quả cao với dữ liệu tuyến tính
+## 3. Các mô hình sử dụng
 
-**Kết quả đánh giá:**
-- MAE : **4,454,662,907 USD**
-- RMSE: **5,536,819,426 USD**
-- R²  : **0.9793**
+- **ARIMA:** mô hình thống kê truyền thống, đơn biến
+- **RNN:** mạng nơ-ron hồi tiếp, học được quan hệ theo thời gian
+- **LSTM:** cải tiến từ RNN, xử lý tốt phụ thuộc dài hạn
 
-➡️ *Linear Regression cho kết quả rất tốt, cho thấy mối quan hệ tuyến tính mạnh giữa GDP và các biến kinh tế vĩ mô.*
-
----
-
-### 3.2 ARIMA
-- Mô hình chuỗi thời gian truyền thống
-- Chỉ sử dụng **GDP lịch sử** (không dùng biến ngoại sinh)
-- Yêu cầu kiểm tra tính dừng của chuỗi
-
-**Kết quả đánh giá:**
-- MAE : **15,514,315,855 USD**
-- RMSE: **22,056,263,884 USD**
-- R²  : **0.6710**
-
-➡️ *ARIMA nắm bắt được xu hướng ngắn hạn của GDP, tuy nhiên độ chính xác thấp hơn do không khai thác được các yếu tố kinh tế vĩ mô khác.*
-
----
-
-### 3.3 Recurrent Neural Network (RNN)
-- Mô hình mạng nơ-ron hồi tiếp cho chuỗi thời gian
-- Có khả năng học quan hệ phi tuyến và phụ thuộc theo thời gian
-
-**Kết quả đánh giá:**
-- MAE : **10,646,738,470 USD**
-- RMSE: **12,827,731,093 USD**
-- R²  : **0.8887**
-
-➡️ *RNN cho kết quả tốt hơn ARIMA, thể hiện khả năng mô hình hóa phi tuyến, tuy nhiên vẫn bị hạn chế bởi số lượng dữ liệu huấn luyện nhỏ.*
-
----
-
-### 3.4 Long Short-Term Memory (LSTM)
-- Biến thể nâng cao của RNN
-- Có khả năng ghi nhớ phụ thuộc dài hạn
-
-**Kết quả đánh giá:**
-- MAE : **22,942,903,104 USD**
-- RMSE: **26,613,378,935 USD**
-- R²  : **0.5210**
-
-➡️ *Trong bối cảnh dữ liệu hạn chế, LSTM chưa phát huy được ưu thế, dẫn đến hiện tượng overfitting và kết quả dự đoán kém hơn các mô hình khác.*
-
----
-
-## 4. So sánh tổng hợp các mô hình
+## 4. Kết quả đánh giá
 
 | Mô hình | MAE (USD) | RMSE (USD) | R² |
-|------|-----------|------------|-----|
-| Linear Regression | 4.45e9 | 5.54e9 | **0.9793** |
-| ARIMA | 1.55e10 | 2.21e10 | 0.6710 |
-| RNN | 1.06e10 | 1.28e10 | 0.8887 |
-| LSTM | 2.29e10 | 2.66e10 | 0.5210 |
+|--------|-----------|-----------|-----|
+| ARIMA | 37,646,224,349 | 44,914,364,139 | 0.4719 |
+| RNN | 14,511,524,207 | 18,753,470,089 | 0.8382 |
+| LSTM | 12,541,306,440 | 14,592,228,635 | 0.9020 |
 
----
+## 5. Nhận xét
 
-## 5. Nhận xét chung
+- ARIMA cho kết quả thấp do không mô hình hóa được quan hệ phi tuyến
+- RNN cải thiện đáng kể độ chính xác
+- LSTM cho kết quả tốt nhất, phù hợp nhất với bài toán dự đoán GDP chuỗi thời gian
 
-- **Linear Regression** đạt hiệu quả cao nhất trong tập dữ liệu hiện tại
-- **RNN** cho kết quả khá tốt và cho thấy tiềm năng của deep learning
-- **ARIMA** phù hợp cho phân tích xu hướng nhưng hạn chế về độ chính xác
-- **LSTM** cần tập dữ liệu lớn hơn để phát huy hiệu quả
+## 6. Kết luận
 
-➡️ Trong phạm vi nghiên cứu này, **Linear Regression** được xem là mô hình phù hợp nhất để dự đoán GDP Việt Nam.
+LSTM là mô hình hiệu quả nhất trong ba mô hình được thử nghiệm và có tiềm năng ứng dụng trong dự đoán GDP ngắn hạn và trung hạn.
 
----
+➡️ Trong phạm vi nghiên cứu này, **LSTM** được xem là mô hình phù hợp nhất để dự đoán GDP Việt Nam.
 
-## 6. Hướng phát triển
-
-- Áp dụng **ARIMAX** (ARIMA với biến ngoại sinh)
-- Xây dựng **LSTM đa biến** (GDP + FDI, Export, Import, …)
-- Mở rộng dữ liệu theo quý hoặc theo tháng
-- Triển khai giao diện demo dự báo GDP tương lai
-
----
-
-## 7. Công nghệ sử dụng
+## 6. Công nghệ sử dụng
 
 - Python, Pandas, NumPy
 - Scikit-learn
